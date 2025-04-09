@@ -19,6 +19,17 @@ jobs:
         with:
           submodules: true
           lfs: false
+
+      # Step to deploy the Bicep template
+      - name: Deploy Bicep Template
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.50.0
+          inlineScript: |
+            az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+            az deployment group create --resource-group <your-resource-group> --template-file bicep/main.bicep --parameters @bicep/parameters.json
+
+      # Step to build and deploy the Static Web App
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
