@@ -1,10 +1,20 @@
-# Vanilla JavaScript App
-
-[Azure Static Web Apps](https://docs.microsoft.com/azure/static-web-apps/overview) allows you to easily build JavaScript apps in minutes. Use this repo with the [quickstart](https://docs.microsoft.com/azure/static-web-apps/getting-started?tabs=vanilla-javascript) to build and customize a new static site.
-
-This repo is used as a starter for a _very basic_ HTML web application using no front-end frameworks.
+# TimeAway Web
 
 This repo also includes a **CI/CD workflow** to automate the deployment of the app to Azure Static Web Apps using a **Bicep template**.
+
+---
+
+## Indholdsfortegnelse
+
+1. [Features](#features)
+2. [Azure Static Web Apps CI/CD Workflow](#azure-static-web-apps-cicd-workflow)
+   - [Workflow Overview](#workflow-overview)
+   - [How to Trigger the Workflow Manually](#how-to-trigger-the-workflow-manually)
+3. [Prerequisites](#prerequisites)
+4. [Folder Structure](#folder-structure)
+5. [Additional Notes](#additional-notes)
+
+---
 
 ## Features
 
@@ -44,7 +54,7 @@ The workflow is defined in `.github/workflows/main.yml` and performs the followi
 
 ---
 
-### Prerequisites
+## Prerequisites
 
 Before running the workflow, ensure the following:
 
@@ -66,7 +76,7 @@ Before running the workflow, ensure the following:
 
 ---
 
-### Folder Structure
+## Folder Structure
 
 ```plaintext
 timeaway-web/
@@ -77,10 +87,11 @@ timeaway-web/
 ├── .github/
 │   ├── workflows/
 │       ├── main.yml             # GitHub Actions workflow file
-├── [README.md](http://_vscodecontentref_/1)                    # Project documentation
+├── [README.md](http://_vscodecontentref_/2)                    # Project documentation
+````
 
+## Additional Notes
 
-Additional Notes
 The workflow uses Azure CLI to deploy the Bicep template and manage Azure resources.
 The parameters.json file contains the configuration for the Static Web App, including its name, location, and repository details.
 The workflow is designed to follow Azure best practices for CI/CD and infrastructure deployment.
