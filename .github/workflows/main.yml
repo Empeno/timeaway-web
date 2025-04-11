@@ -33,6 +33,7 @@ jobs:
         azcliversion: 2.50.0
         inlineScript: |
           az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+          az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
     
     - uses: azure/arm-deploy@v1
       name: Run preflight validation
@@ -68,6 +69,7 @@ jobs:
           azcliversion: 2.50.0
           inlineScript: |
             az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+            az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
             az deployment group create --resource-group rg-time-away --template-file deploy/main.bicep --parameters @bicep/parameters.json
 
       # Step to get the API key using the extracted Static Web App name
