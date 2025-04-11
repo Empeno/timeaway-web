@@ -38,7 +38,7 @@ jobs:
       name: Run preflight validation
       with:
         deploymentName: ${{ github.run_number }}
-        resourceGroupName: rg-time-away        
+        resourceGroupName: 'rg-time-away'
         template: ./deploy/main.bicep
         parameters: environmentType=${{ env.ENVIRONMENT_TYPE }}
         deploymentMode: Validate
