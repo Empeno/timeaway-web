@@ -1,5 +1,12 @@
 # TimeAway Web
 
+![Build Status](https://img.shields.io/github/actions/workflow/status/Empeno/timeaway-web/main.yml?branch=main&label=Build%20Status)  
+![Azure Static Web Apps](https://img.shields.io/badge/Azure-Static%20Web%20Apps-blue?logo=microsoftazure)  
+![License](https://img.shields.io/github/license/Empeno/timeaway-web)  
+![Last Commit](https://img.shields.io/github/last-commit/Empeno/timeaway-web)  
+![Repo Size](https://img.shields.io/github/repo-size/Empeno/timeaway-web)  
+![Contributors](https://img.shields.io/github/contributors/Empeno/timeaway-web)  
+
 This repo also includes a **CI/CD workflow** to automate the deployment of the app to Azure Static Web Apps using a **Bicep template**.
 
 ---
@@ -87,7 +94,7 @@ timeaway-web/
 ├── .github/
 │   ├── workflows/
 │       ├── main.yml             # GitHub Actions workflow file
-├── [README.md](http://_vscodecontentref_/2)                    # Project documentation
+├── [README.md](http://_vscodecontentref_/1)                    # Project documentation
 ````
 
 ## Additional Notes
