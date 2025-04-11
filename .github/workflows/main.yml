@@ -46,15 +46,15 @@ jobs:
             echo "Listing all resource groups in the subscription:"
             az group list --query "[].name"
 
-      - uses: azure/arm-deploy@v1
-        name: Run preflight validation
+      - name: Validate Bicep Template
+        uses: azure/CLI@v1
         with:
-          deploymentName: ${{ github.run_number }}
-          resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
-          resourceGroupLocation: ${{ env.RESOURCE_GROUP_LOCATION }}
-          template: ./deploy/main.bicep
-          parameters: environmentType=${{ env.ENVIRONMENT_TYPE }}
-          deploymentMode: Validate
+          inlineScript: |
+            echo "Validating Bicep template..."
+            az deployment group validate \
+              --resource-group ${{ env.RESOURCE_GROUP_NAME }} \
+              --template-file ./deploy/main.bicep \
+              --parameters @bicep/parameters.json
 
   build_and_deploy_job:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
