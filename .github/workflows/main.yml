@@ -37,27 +37,20 @@ jobs:
       with:
         deploymentName: ${{ github.run_number }}
         resourceGroupName: ${{ env.AZURE_RESOURCEGROUP_NAME }}
-        template: ./bicep/main.bicep
+        template: ./deploy/main.bicep
         parameters: environmentType=${{ env.ENVIRONMENT_TYPE }}
         deploymentMode: Validate
 
   build_and_deploy_job:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
+    needs: [lint, validate]
     name: Build and Deploy Job
     steps:
       - uses: actions/checkout@v3
         with:
           submodules: true
-          lfs: false      
-
-      # Step to validate the Bicep template
-      - name: Validate Bicep Template
-        uses: azure/CLI@v1
-        with:
-          azcliversion: 2.50.0
-          inlineScript: |
-            az deployment group validate --resource-group rg-time-away --template-file bicep/main.bicep --parameters @bicep/parameters.json
+          lfs: false            
 
       # Step to extract Static Web App name from parameters.json
       - name: Extract Static Web App Name
@@ -73,7 +66,7 @@ jobs:
           azcliversion: 2.50.0
           inlineScript: |
             az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
-            az deployment group create --resource-group rg-time-away --template-file bicep/main.bicep --parameters @bicep/parameters.json
+            az deployment group create --resource-group rg-time-away --template-file deploy/main.bicep --parameters @bicep/parameters.json
 
       # Step to get the API key using the extracted Static Web App name
       - name: Get API key 🔑
