@@ -6,9 +6,7 @@
 ![Last Commit](https://img.shields.io/github/last-commit/Empeno/timeaway-web)  
 ![Repo Size](https://img.shields.io/github/repo-size/Empeno/timeaway-web)  
 ![Contributors](https://img.shields.io/github/contributors/Empeno/timeaway-web)  
-![Code Quality](https://img.shields.io/codacy/grade/your-codacy-project-id?logo=codacy)  
-![Code Coverage](https://img.shields.io/codecov/c/github/Empeno/timeaway-web?logo=codecov)  
-![Security Analysis](https://img.shields.io/github/actions/workflow/status/Empeno/timeaway-web/codeql-analysis.yml?branch=main&label=CodeQL%20Analysis)  
+
 
 This repo also includes a **CI/CD workflow** to automate the deployment of the app to Azure Static Web Apps using a **Bicep template**.
 
