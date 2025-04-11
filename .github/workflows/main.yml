@@ -20,6 +20,13 @@ jobs:
           submodules: true
           lfs: false
 
+      # Step to extract Static Web App name from parameters.json
+      - name: Extract Static Web App Name
+        id: extract_static_web_app_name
+        run: |
+          STATIC_WEB_APP_NAME=$(jq -r '.parameters.staticWebAppName.value' bicep/parameters.json)
+          echo "STATIC_WEB_APP_NAME=$STATIC_WEB_APP_NAME" >> $GITHUB_ENV
+
       # Step to deploy the Bicep template
       - name: Deploy Bicep Template
         uses: azure/CLI@v1
@@ -28,19 +35,27 @@ jobs:
           inlineScript: |
             az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
             az deployment group create --resource-group rg-time-away --template-file bicep/main.bicep --parameters @bicep/parameters.json
-      
+
+      # Step to get the API key using the extracted Static Web App name
+      - name: Get API key 🔑
+        id: static_web_app_apikey
+        uses: azure/CLI@v2
+        with:
+          inlineScript: |
+            APIKEY=$(az staticwebapp secrets list --name ${{ env.STATIC_WEB_APP_NAME }} --query properties.apiKey -o tsv)
+            echo "APIKEY=$APIKEY" >> $GITHUB_OUTPUT
+
+      # Step to build and deploy the Static Web App
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_WHITE_MOSS_0F935A403 }}
+          azure_static_web_apps_api_token: ${{ steps.static_web_app_apikey.outputs.APIKEY }} 
           repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
           action: "upload"
-          
-          app_location: "/src" 
-          api_location: "api" 
-          output_location: "/src" 
-          
+          app_location: "/src"
+          api_location: "api"
+          output_location: "/src"
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
