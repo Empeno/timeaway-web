@@ -25,6 +25,23 @@ jobs:
           submodules: true
           lfs: false
 
+      # Step to lint the Bicep template
+      - name: Lint Bicep Template
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.50.0
+          inlineScript: |
+            az bicep build --file bicep/main.bicep --out-file /dev/null
+            az bicep lint --file bicep/main.bicep
+
+      # Step to validate the Bicep template
+      - name: Validate Bicep Template
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.50.0
+          inlineScript: |
+            az deployment group validate --resource-group rg-time-away --template-file bicep/main.bicep --parameters @bicep/parameters.json
+
       # Step to extract Static Web App name from parameters.json
       - name: Extract Static Web App Name
         id: extract_static_web_app_name
