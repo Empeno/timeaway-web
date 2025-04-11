@@ -14,36 +14,47 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  RESOURCE_GROUP_NAME: rg-time-away # Define the resource group name as an environment variable
+  RESOURCE_GROUP_LOCATION: westeurope # Define the resource group location as an environment variable
+
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Run Bicep linter
-      run: az bicep build --file deploy/main.bicep
+      - uses: actions/checkout@v3
+      - name: Run Bicep linter
+        run: az bicep build --file deploy/main.bicep
 
   validate:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Sign in to Azure
-      uses: azure/CLI@v1
-      with:
-        azcliversion: 2.50.0
-        inlineScript: |
-          az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
-          az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-    
-    - uses: azure/arm-deploy@v1
-      name: Run preflight validation
-      with:
-        deploymentName: ${{ github.run_number }}
-        resourceGroupName: 'rg-time-away'
-        resourceGroupLocation: 'westeurope'
-        template: ./deploy/main.bicep
-        parameters: environmentType=${{ env.ENVIRONMENT_TYPE }}
-        deploymentMode: Validate
+      - name: Sign in to Azure
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.50.0
+          inlineScript: |
+            az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+            az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Debug Resource Groups
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            echo "Listing all resource groups in the subscription:"
+            az group list --query "[].name"
+
+      - uses: azure/arm-deploy@v1
+        name: Run preflight validation
+        with:
+          deploymentName: ${{ github.run_number }}
+          resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
+          resourceGroupLocation: ${{ env.RESOURCE_GROUP_LOCATION }}
+          template: ./deploy/main.bicep
+          parameters: environmentType=${{ env.ENVIRONMENT_TYPE }}
+          deploymentMode: Validate
 
   build_and_deploy_job:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
@@ -71,7 +82,7 @@ jobs:
           inlineScript: |
             az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
             az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-            az deployment group create --resource-group rg-time-away --template-file deploy/main.bicep --parameters @bicep/parameters.json
+            az deployment group create --resource-group ${{ env.RESOURCE_GROUP_NAME }} --template-file deploy/main.bicep --parameters @bicep/parameters.json
 
       # Step to get the API key using the extracted Static Web App name
       - name: Get API key 🔑
