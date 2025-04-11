@@ -27,7 +27,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Sing in to Azure
+    - name: Sign in to Azure
       uses: azure/CLI@v1
       with:
         azcliversion: 2.50.0
