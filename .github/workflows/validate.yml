@@ -1,0 +1,40 @@
+name: Validate Bicep Template
+
+on:
+  workflow_call: # Allows this workflow to be called by other workflows
+    inputs:
+      resource_group_name:
+        required: true
+        type: string
+      subscription_id:
+        required: true
+        type: string
+      bicep_file:
+        required: true
+        type: string
+      parameters_file:
+        required: true
+        type: string
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Sign in to Azure
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+            az account set --subscription ${{ inputs.subscription_id }}
+
+      - name: Validate Bicep Template
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            echo "Validating Bicep template..."
+            az deployment group validate \
+              --resource-group ${{ inputs.resource_group_name }} \
+              --template-file ${{ inputs.bicep_file }} \
+              --parameters @${{ inputs.parameters_file }}

@@ -25,33 +25,14 @@ jobs:
       bicep_file: ./deploy/main.bicep
 
   validate:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Sign in to Azure
-        uses: azure/CLI@v1
-        with:          
-          inlineScript: |
-            az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
-            az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Debug Resource Groups
-        uses: azure/CLI@v1
-        with:
-          inlineScript: |
-            echo "Listing all resource groups in the subscription:"
-            az group list --query "[].name"
-
-      - name: Validate Bicep Template
-        uses: azure/CLI@v1
-        with:
-          inlineScript: |
-            echo "Validating Bicep template..."
-            az deployment group validate \
-              --resource-group ${{ env.RESOURCE_GROUP_NAME }} \
-              --template-file ./deploy/main.bicep \
-              --parameters @deploy/parameters.json
+    needs: lint
+    uses: ./.github/workflows/reusable/validate.yml
+    with:
+      resource_group_name: ${{ env.RESOURCE_GROUP_NAME }}
+      subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      bicep_file: ${{ env.BICEP_FILE }}
+      parameters_file: ${{ env.PARAMETERS_FILE }}  
+  
 
   build_and_deploy_job:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
