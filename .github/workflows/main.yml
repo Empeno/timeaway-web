@@ -25,16 +25,6 @@ jobs:
       bicep_file: ./deploy/main.bicep
 
   validate:
-    needs: lint
-    uses: ./.github/workflows/reusable/validate.yml
-    with:
-      resource_group_name: ${{ env.RESOURCE_GROUP_NAME }}
-      subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      bicep_file: ${{ env.BICEP_FILE }}
-      parameters_file: ${{ env.PARAMETERS_FILE }}
-
-  
-  validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
