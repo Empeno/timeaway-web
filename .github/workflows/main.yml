@@ -15,16 +15,15 @@ concurrency:
   cancel-in-progress: true
 
 env:
+  BICEP_FILE: deploy/main.bicep # Define the Bicep file path as an environment variable
   RESOURCE_GROUP_NAME: rg-time-away # Define the resource group name as an environment variable
   RESOURCE_GROUP_LOCATION: westeurope # Define the resource group location as an environment variable
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Run Bicep linter
-        run: az bicep build --file deploy/main.bicep
+    uses: ./.github/workflows/reusable/lint.yml
+    with:
+      bicep_file: ${{ env.BICEP_FILE }}
 
   validate:
     runs-on: ubuntu-latest

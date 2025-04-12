@@ -1,0 +1,16 @@
+name: Lint Bicep Template
+
+on:
+  workflow_call: # Allows this workflow to be called by other workflows
+    inputs:
+      bicep_file:
+        required: true
+        type: string
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run Bicep linter
+        run: az bicep build --file ${{ inputs.bicep_file }}
