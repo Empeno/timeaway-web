@@ -15,29 +15,51 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  RESOURCE_GROUP_NAME: rg-time-away
-  RESOURCE_GROUP_LOCATION: westeurope
-  BICEP_FILE: deploy/main.bicep
-  PARAMETERS_FILE: deploy/parameters.json
+  RESOURCE_GROUP_NAME: rg-time-away # Define the resource group name as an environment variable
+  RESOURCE_GROUP_LOCATION: westeurope # Define the resource group location as an environment variable
 
 jobs:
   lint:
     uses: ./.github/workflows/lint.yml
     with:
-      bicep_file: ${{ env.BICEP_FILE }}
+      bicep_file: ./deploy/main.bicep
 
   validate:
     needs: lint
-    uses: ./.github/workflows/validate.yml
+    uses: ./.github/workflows/reusable/validate.yml
     with:
       resource_group_name: ${{ env.RESOURCE_GROUP_NAME }}
       subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       bicep_file: ${{ env.BICEP_FILE }}
       parameters_file: ${{ env.PARAMETERS_FILE }}
 
-  build_and_deploy_job:
-    needs: validate
+  
+  validate:
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Sign in to Azure
+        uses: azure/CLI@v1
+        with:          
+          inlineScript: |
+            az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+            az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}      
+
+      - name: Validate Bicep Template
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            echo "Validating Bicep template..."
+            az deployment group validate \
+              --resource-group ${{ env.RESOURCE_GROUP_NAME }} \
+              --template-file ./deploy/main.bicep \
+              --parameters @deploy/parameters.json
+
+  build_and_deploy_job:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    runs-on: ubuntu-latest
+    needs: [lint, validate]
     name: Build and Deploy Job
     steps:
       - uses: actions/checkout@v3
@@ -56,11 +78,11 @@ jobs:
       - name: Deploy Bicep Template
         uses: azure/CLI@v1
         with:
+          azcliversion: 2.50.0
           inlineScript: |
-            az deployment group create \
-              --resource-group ${{ env.RESOURCE_GROUP_NAME }} \
-              --template-file ${{ env.BICEP_FILE }} \
-              --parameters @deploy/parameters.json
+            az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+            az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+            az deployment group create --resource-group ${{ env.RESOURCE_GROUP_NAME }} --template-file deploy/main.bicep --parameters @deploy/parameters.json
 
       # Step to get the API key using the extracted Static Web App name
       - name: Get API key 🔑
