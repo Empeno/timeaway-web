@@ -70,7 +70,7 @@ jobs:
       - name: Extract Static Web App Name
         id: extract_static_web_app_name
         run: |
-          STATIC_WEB_APP_NAME=$(jq -r '.parameters.staticWebAppName.value' bicep/parameters.json)
+          STATIC_WEB_APP_NAME=$(jq -r '.parameters.staticWebAppName.value' deploy/parameters.json)
           echo "STATIC_WEB_APP_NAME=$STATIC_WEB_APP_NAME" >> $GITHUB_ENV
 
       # Step to deploy the Bicep template
@@ -81,7 +81,7 @@ jobs:
           inlineScript: |
             az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
             az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-            az deployment group create --resource-group ${{ env.RESOURCE_GROUP_NAME }} --template-file deploy/main.bicep --parameters @bicep/parameters.json
+            az deployment group create --resource-group ${{ env.RESOURCE_GROUP_NAME }} --template-file deploy/main.bicep --parameters @deploy/parameters.json
 
       # Step to get the API key using the extracted Static Web App name
       - name: Get API key 🔑
