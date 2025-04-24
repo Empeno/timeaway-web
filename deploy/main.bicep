@@ -23,6 +23,16 @@ resource staticWebApp 'Microsoft.Web/staticSites@2022-03-01' = {
   properties: {
     repositoryUrl: repositoryUrl
     branch: branch
+    databaseConnections: [
+      {
+        name: 'default'        
+        configurationFiles: {
+          fileName: 'staticwebapp.database.config.json'
+          contents: null
+          type: 'configuration'
+        }
+      }
+    ]
   }
 }
 
