@@ -1,3 +1,6 @@
+swa start ./src --data-api-location swa-db-connections
+
+
 # TimeAway Web
 
 ![Build Status](https://img.shields.io/github/actions/workflow/status/Empeno/timeaway-web/main.yml?branch=main&label=Build%20Status)  
