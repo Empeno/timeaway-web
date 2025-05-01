@@ -1,5 +1,6 @@
 // API endpoints
-const apiEndpoint = "https://htemailfunction.azurewebsites.net/api/GetHolidayRequests?code=4aFS/po6AfAvAOMOPD5Cdy6lfRv3HpLRtX7TJ45xquO1I/GB2flV6g==";
+//const apiEndpoint = "https://htemailfunction.azurewebsites.net/api/GetHolidayRequests?code=4aFS/po6AfAvAOMOPD5Cdy6lfRv3HpLRtX7TJ45xquO1I/GB2flV6g==";
+const apiEndpoint = "/data-api/rest/HolidayRequest";
 const deleteEndpoint = "https://your-api-endpoint/deleteHolidayRequest";
 const approveEndpoint = "https://your-api-endpoint/approveHolidayRequest";
 
@@ -12,7 +13,10 @@ async function fetchHolidayRequests() {
     }
 
     const data = await response.json();
-    displayHolidayRequests(data);
+
+    // Access the array of holiday requests from the "value" property
+    const requests = data.value || []; // Default to an empty array if "value" is undefined
+    displayHolidayRequests(requests);
   } catch (error) {
     console.error("Error fetching holiday requests:", error);
     document.getElementById("holiday-requests").innerHTML = `
@@ -25,7 +29,7 @@ async function fetchHolidayRequests() {
 // Display holiday requests in the DOM
 function displayHolidayRequests(requests) {
   const container = document.getElementById("holiday-requests");
-  if (requests.length === 0) {
+  if (!Array.isArray(requests) || requests.length === 0) {
     container.innerHTML = `
       <div class="alert alert-info" role="alert">
         No holiday requests found.
@@ -40,16 +44,16 @@ function displayHolidayRequests(requests) {
     card.innerHTML = `
       <div class="card shadow-sm">
         <div class="card-body">
-          <h5 class="card-title">${request.driver || "N/A"}</h5>
+          <h5 class="card-title">${request.Driver || "N/A"}</h5>
           <p class="card-text">
-            <strong>Start Date:</strong> ${new Date(request.holidayStartDate).toLocaleDateString()}<br>
-            <strong>End Date:</strong> ${new Date(request.holidayEndDate).toLocaleDateString()}<br>
-            <strong>Type:</strong> ${request.requestType}<br>
-            <strong>Remark:</strong> ${request.remark}
+            <strong>Start Date:</strong> ${new Date(request.HolidayStartDate).toLocaleDateString()}<br>
+            <strong>End Date:</strong> ${new Date(request.HolidayEndDate).toLocaleDateString()}<br>
+            <strong>Request Type ID:</strong> ${request.RequestTypeId}<br>
+            <strong>Remark:</strong> ${request.Remark || "N/A"}
           </p>
           <div class="d-flex justify-content-between">
-            <button class="btn btn-success btn-sm" onclick="approveRequest('${request.driver}', '${request.holidayStartDate}')">Approve</button>
-            <button class="btn btn-danger btn-sm" onclick="deleteRequest('${request.driver}', '${request.holidayStartDate}')">Delete</button>
+            <button class="btn btn-success btn-sm" onclick="approveRequest('${request.Driver}', '${request.HolidayStartDate}')">Approve</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteRequest('${request.Driver}', '${request.HolidayStartDate}')">Delete</button>
           </div>
         </div>
       </div>
