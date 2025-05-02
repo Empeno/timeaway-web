@@ -44,6 +44,18 @@
     },
     "HolidayRequest": {
       "source": "dbo.HolidayRequest",
+      "relationships": {
+        "RequestType": {
+          "cardinality": "one",
+          "target.entity": "RequestType",
+          "source.fields": [
+            "RequestTypeId"
+          ],
+          "target.fields": [
+            "RequestTypeId"
+          ]
+        }        
+      },
       "permissions": [
         {
           "actions": [

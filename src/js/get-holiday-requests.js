@@ -1,21 +1,40 @@
-// API endpoints
-//const apiEndpoint = "https://htemailfunction.azurewebsites.net/api/GetHolidayRequests?code=4aFS/po6AfAvAOMOPD5Cdy6lfRv3HpLRtX7TJ45xquO1I/GB2flV6g==";
-const apiEndpoint = "/data-api/rest/HolidayRequest";
-const deleteEndpoint = "https://your-api-endpoint/deleteHolidayRequest";
-const approveEndpoint = "https://your-api-endpoint/approveHolidayRequest";
+// GraphQL endpoint
+const graphqlEndpoint = "/data-api/graphql";
+const restEndpoint = "/data-api/rest/HolidayRequest";
 
 // Fetch and display holiday requests
 async function fetchHolidayRequests() {
+  const query = `
+    {
+      holidayRequests {
+        items {
+          HolidayRequestId
+          Driver
+          HolidayStartDate
+          HolidayEndDate
+          Remark
+          RequestType {
+            RequestTypeId
+            RequestTypeName
+          }
+        }
+      }
+    }
+  `;
+
   try {
-    const response = await fetch(apiEndpoint);
+    const response = await fetch(graphqlEndpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query }),
+    });
+
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-    const data = await response.json();
-
-    // Access the array of holiday requests from the "value" property
-    const requests = data.value || []; // Default to an empty array if "value" is undefined
+    const { data } = await response.json();
+    const requests = data.holidayRequests.items; // Access the "items" array
     displayHolidayRequests(requests);
   } catch (error) {
     console.error("Error fetching holiday requests:", error);
@@ -37,6 +56,8 @@ function displayHolidayRequests(requests) {
     return;
   }
 
+  container.innerHTML = ""; // Clear previous content
+
   requests.forEach((request) => {
     const card = document.createElement("div");
     card.className = "col-md-4";
@@ -48,12 +69,11 @@ function displayHolidayRequests(requests) {
           <p class="card-text">
             <strong>Start Date:</strong> ${new Date(request.HolidayStartDate).toLocaleDateString()}<br>
             <strong>End Date:</strong> ${new Date(request.HolidayEndDate).toLocaleDateString()}<br>
-            <strong>Request Type ID:</strong> ${request.RequestTypeId}<br>
-            <strong>Remark:</strong> ${request.Remark || "N/A"}
+            <strong>Remark:</strong> ${request.Remark || "N/A"}<br />
+            <strong>Request Type:</strong> ${request.RequestType.RequestTypeName || "N/A"}
           </p>
           <div class="d-flex justify-content-between">
-            <button class="btn btn-success btn-sm" onclick="approveRequest('${request.Driver}', '${request.HolidayStartDate}')">Approve</button>
-            <button class="btn btn-danger btn-sm" onclick="deleteRequest('${request.Driver}', '${request.HolidayStartDate}')">Delete</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteRequest(${request.HolidayRequestId})">Delete</button>
           </div>
         </div>
       </div>
@@ -87,14 +107,14 @@ async function approveRequest(driver, holidayStartDate) {
 }
 
 // Delete a holiday request
-async function deleteRequest(driver, holidayStartDate) {
+async function deleteRequest(holidayRequestId) {
   if (!confirm("Are you sure you want to delete this request?")) return;
 
+  const endpoint = '/data-api/rest/HolidayRequest/HolidayRequestId';
+
   try {
-    const response = await fetch(deleteEndpoint, {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ driver, holidayStartDate }),
+    const response = await fetch(`${endpoint}/${holidayRequestId}`, {
+      method: "DELETE"      
     });
 
     if (!response.ok) {
