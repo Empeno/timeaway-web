@@ -56,32 +56,44 @@ function displayHolidayRequests(requests) {
     return;
   }
 
-  container.innerHTML = ""; // Clear previous content
-
-  requests.forEach((request) => {
-    const card = document.createElement("div");
-    card.className = "col-md-4";
-
-    card.innerHTML = `
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">${request.Driver || "N/A"}</h5>
-          <p class="card-text">
-            <strong>Start Date:</strong> ${new Date(request.HolidayStartDate).toLocaleDateString()}<br>
-            <strong>End Date:</strong> ${new Date(request.HolidayEndDate).toLocaleDateString()}<br>
-            <strong>Remark:</strong> ${request.Remark ? request.Remark.replace(/\n/g, "<br>") : "N/A"}<br />
-            <strong>Request Type:</strong> ${request.RequestType.RequestTypeName || "N/A"}
-          </p>
-          <div class="d-flex justify-content-between">
-            <button class="btn btn-warning btn-sm" onclick="openUpdateModal(${request.HolidayRequestId})">Update</button>
-            <button class="btn btn-danger btn-sm" onclick="deleteRequest(${request.HolidayRequestId})">Delete</button>
-          </div>
-        </div>
-      </div>
-    `;
-
-    container.appendChild(card);
-  });
+  // Create the table structure
+  container.innerHTML = `
+    <table class="table table-striped table-hover">
+      <thead class="table-dark">
+        <tr>
+          <th>#</th>
+          <th>Driver</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Remark</th>
+          <th>Request Type</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${requests
+          .map(
+            (request, index) => `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${request.Driver || "N/A"}</td>
+            <td>${new Date(request.HolidayStartDate).toLocaleDateString()}</td>
+            <td>${new Date(request.HolidayEndDate).toLocaleDateString()}</td>
+            <td>${request.Remark ? request.Remark.replace(/\n/g, "<br>") : "N/A"}</td>
+            <td>${request.RequestType.RequestTypeName || "N/A"}</td>
+            <td>
+              <div class="d-flex gap-2">
+                <button class="btn btn-warning btn-sm" onclick="openUpdateModal(${request.HolidayRequestId})">Update</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteRequest(${request.HolidayRequestId})">Delete</button>
+              </div>
+            </td>
+          </tr>
+        `
+          )
+          .join("")}
+      </tbody>
+    </table>
+  `;
 }
 
 // Approve a holiday request

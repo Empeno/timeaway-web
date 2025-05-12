@@ -11,23 +11,12 @@
 <body class="bg-light">
 
 
-  <h1>Static Web Apps Database Connections</h1>
-<blockquote>
-    Open the console in the browser developer tools to see the API responses.
-</blockquote>
-<div>
-    <button id="list" onclick="list()">List</button>
-    <button id="get" onclick="get()">Get</button>
-    <button id="update" onclick="update()">Update</button>
-    <button id="create" onclick="create()">Create</button>
-    <button id="delete" onclick="del()">Delete</button>
-</div>
-
+  <h1>Time Away</h1>
 
 
   <header id="navbar-container"></header> <!-- Placeholder for the navigation bar -->
   <main class="container my-5">
-    <h1 class="text-center mb-4">Dashboard</h1>
+    <h2 class="text-center mb-4">Dashboard</h2>
     <div class="row text-center">
       <div class="col-md-4">
         <div class="card shadow-sm">
@@ -57,34 +46,7 @@
     <div class="text-center mt-4">
       <a href="holiday-requests.html" class="btn btn-primary">View Holiday Requests</a>
     </div>
-  </main>
-
-  <script>
-    async function list() {
-  const endpoint = '/data-api/rest/RequestType';
-  const response = await fetch(endpoint);
-  const data = await response.json();
-  console.table(data.value);
-}
-async function create() {
-
-const data = {
-  RequestTypeName: "Holiday"
-};
-
-const endpoint = `/data-api/rest/RequestType/`;
-const response = await fetch(endpoint, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(data)
-});
-const result = await response.json();
-console.table(result.value);
-}
-
-</script>
-
-
+  </main> 
 
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
