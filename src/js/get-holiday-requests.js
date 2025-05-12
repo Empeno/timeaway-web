@@ -6,7 +6,7 @@ const restEndpoint = "/data-api/rest/HolidayRequest";
 async function fetchHolidayRequests() {
   const query = `
     {
-      holidayRequests {
+      holidayRequests(orderBy: { HolidayStartDate: ASC }) {
         items {
           HolidayRequestId
           Driver
@@ -56,6 +56,15 @@ function displayHolidayRequests(requests) {
     return;
   }
 
+  // Helper function to format dates as dd/MM/YYYY
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
   // Create the table structure
   container.innerHTML = `
     <table class="table table-striped table-hover">
@@ -77,8 +86,8 @@ function displayHolidayRequests(requests) {
           <tr>
             <td>${index + 1}</td>
             <td>${request.Driver || "N/A"}</td>
-            <td>${new Date(request.HolidayStartDate).toLocaleDateString()}</td>
-            <td>${new Date(request.HolidayEndDate).toLocaleDateString()}</td>
+            <td>${formatDate(request.HolidayStartDate)}</td>
+            <td>${formatDate(request.HolidayEndDate)}</td>
             <td>${request.Remark ? request.Remark.replace(/\n/g, "<br>") : "N/A"}</td>
             <td>${request.RequestType.RequestTypeName || "N/A"}</td>
             <td>
