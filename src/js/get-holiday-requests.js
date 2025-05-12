@@ -69,7 +69,7 @@ function displayHolidayRequests(requests) {
           <p class="card-text">
             <strong>Start Date:</strong> ${new Date(request.HolidayStartDate).toLocaleDateString()}<br>
             <strong>End Date:</strong> ${new Date(request.HolidayEndDate).toLocaleDateString()}<br>
-            <strong>Remark:</strong> ${request.Remark || "N/A"}<br />
+            <strong>Remark:</strong> ${request.Remark ? request.Remark.replace(/\n/g, "<br>") : "N/A"}<br />
             <strong>Request Type:</strong> ${request.RequestType.RequestTypeName || "N/A"}
           </p>
           <div class="d-flex justify-content-between">
