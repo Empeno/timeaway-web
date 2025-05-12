@@ -73,6 +73,7 @@ function displayHolidayRequests(requests) {
             <strong>Request Type:</strong> ${request.RequestType.RequestTypeName || "N/A"}
           </p>
           <div class="d-flex justify-content-between">
+            <button class="btn btn-warning btn-sm" onclick="openUpdateModal(${request.HolidayRequestId})">Update</button>
             <button class="btn btn-danger btn-sm" onclick="deleteRequest(${request.HolidayRequestId})">Delete</button>
           </div>
         </div>
@@ -131,3 +132,103 @@ async function deleteRequest(holidayRequestId) {
 
 // Initialize
 fetchHolidayRequests();
+
+
+async function openUpdateModal(holidayRequestId) {
+  try {
+    const endpoint = '/data-api/rest/HolidayRequest/HolidayRequestId';
+    const requestTypeEndpoint = '/data-api/rest/RequestType'; // Endpoint to fetch request types
+
+    // Fetch the holiday request
+    const response = await fetch(`${endpoint}/${holidayRequestId}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    const request = data.value[0]; // Access the first item in the "value" array
+
+    if (!request) {
+      throw new Error("Holiday request not found.");
+    }
+
+    // Populate the modal with the fetched data
+    document.getElementById("updateHolidayRequestId").value = request.HolidayRequestId;
+    document.getElementById("updateDriverName").value = request.Driver;
+    document.getElementById("updateHolidayStartDate").value = request.HolidayStartDate.split("T")[0];
+    document.getElementById("updateHolidayEndDate").value = request.HolidayEndDate.split("T")[0];
+    document.getElementById("updateRemark").value = request.Remark || "";
+
+    // Fetch and populate request types
+    const requestTypeResponse = await fetch(requestTypeEndpoint);
+    if (!requestTypeResponse.ok) {
+      throw new Error(`HTTP error! Status: ${requestTypeResponse.status}`);
+    }
+    const requestTypes = await requestTypeResponse.json();
+    const requestTypeSelect = document.getElementById("updateRequestTypeId");
+    requestTypeSelect.innerHTML = ""; // Clear existing options
+
+    requestTypes.value.forEach((type) => {
+      const option = document.createElement("option");
+      option.value = type.RequestTypeId;
+      option.textContent = type.RequestTypeName;
+      if (type.RequestTypeId === request.RequestTypeId) {
+        option.selected = true; // Pre-select the current request type
+      }
+      requestTypeSelect.appendChild(option);
+    });
+
+    // Show the modal
+    const updateModal = new bootstrap.Modal(document.getElementById("updateHolidayRequestModal"));
+    updateModal.show();
+  } catch (error) {
+    console.error("Error fetching holiday request:", error);
+    alert("Failed to load the holiday request. Please try again.");
+  }
+}
+
+async function updateHolidayRequest(event) {
+  event.preventDefault(); // Prevent form from refreshing the page
+
+  const holidayRequestId = document.getElementById("updateHolidayRequestId").value;
+  const driverName = document.getElementById("updateDriverName").value.trim();
+  const holidayStartDate = document.getElementById("updateHolidayStartDate").value;
+  const holidayEndDate = document.getElementById("updateHolidayEndDate").value;
+  const remark = document.getElementById("updateRemark").value.trim();
+  const requestTypeId = document.getElementById("updateRequestTypeId").value;
+
+  if (!driverName || !holidayStartDate || !holidayEndDate) {
+    alert("All fields except remarks are required.");
+    return;
+  }
+
+  const data = {
+    Driver: driverName,
+    HolidayStartDate: holidayStartDate,
+    HolidayEndDate: holidayEndDate,
+    Remark: remark || null,
+    RequestTypeId: requestTypeId,
+  };
+
+  try {
+    const response = await fetch(`${restEndpoint}/HolidayRequestId/${holidayRequestId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    alert("Request updated successfully!");
+    const updateModal = bootstrap.Modal.getInstance(document.getElementById("updateHolidayRequestModal"));
+    updateModal.hide();
+    fetchHolidayRequests(); // Refresh the list
+  } catch (error) {
+    console.error("Error updating request:", error);
+    alert("Failed to update the request. Please try again.");
+  }
+}
+
+// Attach the update form submission handler
+document.getElementById("update-holiday-request-form").addEventListener("submit", updateHolidayRequest);
