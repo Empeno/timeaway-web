@@ -33,6 +33,8 @@ async function createHolidayRequest(event) {
   const holidayStartDate = document.getElementById("holidayStartDate").value;
   const holidayEndDate = document.getElementById("holidayEndDate").value;
   const requestTypeId = document.getElementById("requestType").value; // Get the selected RequestTypeId
+  const email = document.getElementById("email").value.trim();
+  const vehicleNumber = document.getElementById("vehicleNumber").value.trim();
   const remark = document.getElementById("remark").value.trim();
 
   if (!driverName || !holidayStartDate || !holidayEndDate || !requestTypeId) {
@@ -45,6 +47,8 @@ async function createHolidayRequest(event) {
     HolidayStartDate: holidayStartDate,
     HolidayEndDate: holidayEndDate,
     RequestTypeId: parseInt(requestTypeId, 10), // Ensure the ID is sent as an integer
+    Email: email || null,
+    VehicleNumber: vehicleNumber || null,
     Remark: remark || null,
   };
 
