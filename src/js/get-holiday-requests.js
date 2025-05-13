@@ -76,6 +76,8 @@ function displayHolidayRequests(requests) {
           <th>Driver</th>
           <th>Start Date</th>
           <th>End Date</th>
+          <th>Email</th>
+          <th>Vogn nummer</th>
           <th>Remark</th>
           <th>Request Type</th>
           <th>Actions</th>
@@ -90,6 +92,8 @@ function displayHolidayRequests(requests) {
             <td>${request.Driver || "N/A"}</td>
             <td>${formatDate(request.HolidayStartDate)}</td>
             <td>${formatDate(request.HolidayEndDate)}</td>
+            <td>${request.Email || "N/A"}</td>
+            <td>${request.VognNummer || "N/A"}</td>
             <td>${request.Remark ? request.Remark.replace(/\n/g, "<br>") : "N/A"}</td>
             <td>${request.RequestType.RequestTypeName || "N/A"}</td>
             <td>
