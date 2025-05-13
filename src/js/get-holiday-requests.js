@@ -73,8 +73,7 @@ function displayHolidayRequests(requests) {
   container.innerHTML = `
     <table class="table table-striped table-hover">
       <thead class="table-dark">
-        <tr>
-          <th>#</th>
+        <tr>          
           <th>Driver</th>
           <th>Start Date</th>
           <th>End Date</th>
@@ -88,14 +87,13 @@ function displayHolidayRequests(requests) {
       <tbody>
         ${requests
           .map(
-            (request, index) => `
-          <tr>
-            <td>${index + 1}</td>
+            (request) => `
+          <tr>            
             <td>${request.Driver || "N/A"}</td>
             <td>${formatDate(request.HolidayStartDate)}</td>
             <td>${formatDate(request.HolidayEndDate)}</td>
             <td>${request.Email || "N/A"}</td>
-            <td>${request.VognNummer || "N/A"}</td>
+            <td>${request.VehicleNumber || "N/A"}</td>
             <td>${request.Remark ? request.Remark.replace(/\n/g, "<br>") : "N/A"}</td>
             <td>${request.RequestType.RequestTypeName || "N/A"}</td>
             <td>
