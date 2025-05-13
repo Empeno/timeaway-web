@@ -30,18 +30,7 @@
       }
     }
   },
-  "entities": {
-    "Person": {
-      "source": "dbo.MyTestPersonTable",
-      "permissions": [
-        {
-          "actions": [
-            "*"
-          ],
-          "role": "anonymous"
-        }
-      ]
-    },
+  "entities": {    
     "HolidayRequest": {
       "source": "dbo.HolidayRequest",
       "relationships": {
