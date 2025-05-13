@@ -12,6 +12,15 @@
   <header id="navbar-container"></header> <!-- Placeholder for the navigation bar -->
   <main class="container my-5">
     <h1 class="text-center mb-4">Holiday Requests</h1>
+    
+    <!-- Filter Dropdown -->
+    <div class="mb-3">
+      <label for="filterRequestType" class="form-label">Filter by Request Type</label>
+      <select id="filterRequestType" class="form-select">
+        <option value="">All Request Types</option>
+      </select>
+    </div>
+
     <div id="holiday-requests" class="row g-3">
       <!-- Holiday requests will be displayed here -->
     </div>

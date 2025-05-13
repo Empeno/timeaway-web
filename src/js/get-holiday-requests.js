@@ -2,6 +2,8 @@
 const graphqlEndpoint = "/data-api/graphql";
 const restEndpoint = "/data-api/rest/HolidayRequest";
 
+let allHolidayRequests = []; // Store all requests globally for filtering
+
 // Fetch and display holiday requests
 async function fetchHolidayRequests() {
   const query = `
@@ -34,8 +36,8 @@ async function fetchHolidayRequests() {
     }
 
     const { data } = await response.json();
-    const requests = data.holidayRequests.items; // Access the "items" array
-    displayHolidayRequests(requests);
+    allHolidayRequests = data.holidayRequests.items; // Store all requests globally
+    displayHolidayRequests(allHolidayRequests); // Display all requests initially
   } catch (error) {
     console.error("Error fetching holiday requests:", error);
     document.getElementById("holiday-requests").innerHTML = `
@@ -153,7 +155,7 @@ async function deleteRequest(holidayRequestId) {
 
 // Initialize
 fetchHolidayRequests();
-
+populateRequestTypeDropdown(); // Ensure this is called
 
 async function openUpdateModal(holidayRequestId) {
   try {
@@ -253,3 +255,43 @@ async function updateHolidayRequest(event) {
 
 // Attach the update form submission handler
 document.getElementById("update-holiday-request-form").addEventListener("submit", updateHolidayRequest);
+
+async function populateRequestTypeDropdown() {
+  const requestTypeEndpoint = '/data-api/rest/RequestType';
+
+  try {
+    const response = await fetch(requestTypeEndpoint);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const requestTypes = data.value; // Assuming the API returns a "value" array
+
+    const dropdown = document.getElementById("filterRequestType");
+    requestTypes.forEach((type) => {
+      const option = document.createElement("option");
+      option.value = type.RequestTypeId;
+      option.textContent = type.RequestTypeName;
+      dropdown.appendChild(option);
+    });
+
+    // Add event listener to filter requests when the dropdown value changes
+    dropdown.addEventListener("change", filterHolidayRequests);
+  } catch (error) {
+    console.error("Error fetching request types:", error);
+  }
+}
+
+function filterHolidayRequests() {
+  const selectedRequestTypeId = document.getElementById("filterRequestType").value;
+
+  // Filter requests based on the selected request type
+  const filteredRequests = selectedRequestTypeId
+    ? allHolidayRequests.filter(
+        (request) => request.RequestType.RequestTypeId === parseInt(selectedRequestTypeId, 10)
+      )
+    : allHolidayRequests; // Show all requests if no filter is selected
+
+  displayHolidayRequests(filteredRequests);
+}
