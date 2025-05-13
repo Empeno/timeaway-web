@@ -14,6 +14,8 @@ async function fetchHolidayRequests() {
           Driver
           HolidayStartDate
           HolidayEndDate
+          Email
+          VehicleNumber
           Remark
           RequestType {
             RequestTypeId
