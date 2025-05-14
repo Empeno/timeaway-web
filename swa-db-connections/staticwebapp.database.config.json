@@ -64,6 +64,52 @@
           "role": "anonymous"
         }
       ]
+    },
+    "DamageReport": {
+      "source": "dbo.DamageReport",
+      "relationships": {
+        "DamageReportFileNames": {
+          "cardinality": "many",
+          "target.entity": "DamageReportFileNames",
+          "source.fields": [
+            "Id"
+          ],
+          "target.fields": [
+            "DamageReportId"
+          ]
+        }
+      },
+      "permissions": [
+        {
+          "actions": [
+            "*"
+          ],
+          "role": "anonymous"
+        }
+      ]
+    },
+    "DamageReportFileNames": {
+      "source": "dbo.DamageReportFileNames",
+      "relationships": {
+        "DamageReport": {
+          "cardinality": "one",
+          "target.entity": "DamageReport",
+          "source.fields": [
+            "DamageReportId"
+          ],
+          "target.fields": [
+            "Id"
+          ]
+        }
+      },
+      "permissions": [
+        {
+          "actions": [
+            "*"
+          ],
+          "role": "anonymous"
+        }
+      ]
     }
   }
 }
