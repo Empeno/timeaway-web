@@ -98,6 +98,7 @@ function displayHolidayRequests(requests) {
             <td>${request.RequestType.RequestTypeName || "N/A"}</td>
             <td>
               <div class="d-flex gap-2">
+                <button class="btn btn-success btn-sm" onclick="approveRequest(${request.HolidayRequestId})">Approve</button>
                 <button class="btn btn-warning btn-sm" onclick="openUpdateModal(${request.HolidayRequestId})">Update</button>
                 <button class="btn btn-danger btn-sm" onclick="deleteRequest(${request.HolidayRequestId})">Delete</button>
               </div>
@@ -111,27 +112,30 @@ function displayHolidayRequests(requests) {
   `;
 }
 
+
+
+
+
 // Approve a holiday request
-async function approveRequest(driver, holidayStartDate) {
-  if (!confirm("Are you sure you want to approve this request?")) return;
+async function approveRequest(holidayRequestId) {
+  
+  const base64Token = "Q2FzcGVyVDoxYTQwZDI4ZC0yZGZhLTQ2MzAtYmI3ZS1iNDdjOTM2MTU2MGU=";
 
-  try {
-    const response = await fetch(approveEndpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ driver, holidayStartDate }),
-    });
+  const response = await fetch("https://api.cpsms.dk/v2/send", {
+    method: "POST",
+    headers: {
+      "Authorization": `Basic ${base64Token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      to: "4551850553",
+      message: "Hello from CPSMS!",
+      from: "CPSMS"
+    })
+  });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-    alert("Request approved successfully!");
-    fetchHolidayRequests(); // Refresh the list
-  } catch (error) {
-    console.error("Error approving request:", error);
-    alert("Failed to approve the request. Please try again.");
-  }
+  const result = await response.text();
+  //document.getElementById("smsResult").innerText = `Status: ${response.status}\n${result}`;
 }
 
 // Delete a holiday request
