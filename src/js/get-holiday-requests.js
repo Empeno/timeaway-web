@@ -71,48 +71,44 @@ function displayHolidayRequests(requests) {
 
   // Create the table structure
   container.innerHTML = `
-    <div class="bg-white p-4 rounded shadow-sm">
-      <table class="table table-hover align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>#</th>
-            <th>Driver</th>
-            <th>Fleet Number</th>
-            <th>Trailer Number</th>
-            <th>Description</th>
-            <th>Files</th>
+    <table class="table table-striped table-hover">
+      <thead class="table-light">
+        <tr>          
+          <th>Driver</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Email</th>
+          <th>Vogn nummer</th>
+          <th>Remark</th>
+          <th>Request Type</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${requests
+          .map(
+            (request) => `
+          <tr>            
+            <td>${request.Driver || "N/A"}</td>
+            <td>${formatDate(request.HolidayStartDate)}</td>
+            <td>${formatDate(request.HolidayEndDate)}</td>
+            <td>${request.Email || "N/A"}</td>
+            <td>${request.VehicleNumber || "N/A"}</td>
+            <td>${request.Remark ? request.Remark.replace(/\n/g, "<br>") : "N/A"}</td>
+            <td>${request.RequestType.RequestTypeName || "N/A"}</td>
+            <td>
+              <div class="d-flex gap-2">
+                <button class="btn btn-success btn-sm" onclick="approveRequest(${request.HolidayRequestId})">Approve</button>
+                <button class="btn btn-warning btn-sm" onclick="openUpdateModal(${request.HolidayRequestId})">Update</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteRequest(${request.HolidayRequestId})">Delete</button>
+              </div>
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          ${requests
-            .map(
-              (request, index) => `
-            <tr>
-              <td>${index + 1}</td>
-              <td>${request.Driver || "N/A"}</td>
-              <td>${request.FleetNumber || "N/A"}</td>
-              <td>${request.TrailerNumber || "N/A"}</td>
-              <td>${request.Description || "N/A"}</td>
-              <td>
-                ${
-                  Array.isArray(request.DamageReportFileNames?.items) &&
-                  request.DamageReportFileNames.items.length > 0
-                    ? request.DamageReportFileNames.items
-                        .map(
-                          (file) =>
-                            `<a href="#" onclick="showImage('${file.FileName}')" class="text-decoration-none">View</a>`
-                        )
-                        .join(", ")
-                    : "No files"
-                }
-              </td>
-            </tr>
-          `
-            )
-            .join("")}
-        </tbody>
-      </table>
-    </div>
+        `
+          )
+          .join("")}
+      </tbody>
+    </table>
   `;
 }
 
