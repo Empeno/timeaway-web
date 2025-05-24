@@ -3,28 +3,28 @@ function generateNavbar() {
   const navbarContainer = document.getElementById("navbar-container");
 
   navbarContainer.innerHTML = `
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
       <div class="container-fluid">
-        <a class="navbar-brand" href="index.html">Time Away</a>
+        <a class="navbar-brand" href="/">Time Away</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link" href="index.html">Dashboard</a>
+              <a class="nav-link" href="/">Dashboard</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="holiday-requests.html">Holiday Requests</a>
+              <a class="nav-link" href="/holiday-requests">Holiday Requests</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="request-types.html">Request Types</a>
+              <a class="nav-link" href="/request-types">Request Types</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="create-holiday-request.html">Create Holiday Request</a>
+              <a class="nav-link" href="/create-holiday-request">Create Holiday Request</a>
             </li>
-             <li class="nav-item">
-              <a class="nav-link" href="condition-reports.html">Condition Reports</a>
+            <li class="nav-item">
+              <a class="nav-link" href="/condition-reports">Condition Reports</a>
             </li>
           </ul>
         </div>

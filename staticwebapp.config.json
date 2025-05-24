@@ -1,0 +1,20 @@
+{
+  "routes": [
+    {
+      "route": "/holiday-requests",
+      "rewrite": "/holiday-requests.html"
+    },
+    {
+      "route": "/condition-reports",
+      "rewrite": "/condition-reports.html"
+    },
+    {
+      "route": "/request-types",
+      "rewrite": "/request-types.html"
+    },
+    {
+      "route": "/create-holiday-request",
+      "rewrite": "/create-holiday-request.html"
+    }
+  ]
+}
