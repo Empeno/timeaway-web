@@ -15,7 +15,7 @@ This repo also includes a **CI/CD workflow** to automate the deployment of the a
 
 ---
 
-## Indholdsfortegnelse
+## Table of Contents
 
 1. [Features](#features)
 2. [Azure Static Web Apps CI/CD Workflow](#azure-static-web-apps-cicd-workflow)
@@ -24,6 +24,7 @@ This repo also includes a **CI/CD workflow** to automate the deployment of the a
 3. [Prerequisites](#prerequisites)
 4. [Folder Structure](#folder-structure)
 5. [Additional Notes](#additional-notes)
+6. [Quick Start](#quick-start)
 
 ---
 
@@ -99,7 +100,7 @@ timeaway-web/
 │   ├── workflows/
 │       ├── main.yml             # GitHub Actions workflow file
 ├── [README.md](http://_vscodecontentref_/1)                    # Project documentation
-````
+```
 
 ## Additional Notes
 
@@ -107,4 +108,10 @@ The workflow uses Azure CLI to deploy the Bicep template and manage Azure resour
 The parameters.json file contains the configuration for the Static Web App, including its name, location, and repository details.
 The workflow is designed to follow Azure best practices for CI/CD and infrastructure deployment.
 For more information, refer to the Azure Static Web Apps documentation.
+
+## Quick Start
+
+1. Clone the repo.
+2. Run `npm install` (if needed).
+3. Start the app locally:
 
