@@ -22,10 +22,7 @@ function generateNavbar() {
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/create-holiday-request">Create Holiday Request</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/condition-reports">Condition Reports</a>
-            </li>
+            </li>           
           </ul>
         </div>
       </div>
