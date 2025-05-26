@@ -119,23 +119,7 @@ function displayHolidayRequests(requests) {
 // Approve a holiday request
 async function approveRequest(holidayRequestId) {
   
-  const base64Token = "Q2FzcGVyVDoxYTQwZDI4ZC0yZGZhLTQ2MzAtYmI3ZS1iNDdjOTM2MTU2MGU=";
-
-  const response = await fetch("https://api.cpsms.dk/v2/send", {
-    method: "POST",
-    headers: {
-      "Authorization": `Basic ${base64Token}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      to: "4551850553",
-      message: "Hello from CPSMS!",
-      from: "CPSMS"
-    })
-  });
-
-  const result = await response.text();
-  //document.getElementById("smsResult").innerText = `Status: ${response.status}\n${result}`;
+  
 }
 
 // Delete a holiday request
